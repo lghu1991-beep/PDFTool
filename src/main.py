@@ -1,9 +1,5 @@
 # -*- coding: utf-8 -*-
-<<<<<<< HEAD
 """PDFTool - Windows PDF 小工具。"""
-=======
-"""QYPdfTool - Windows PDF 小工具。"""
->>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
 
 from __future__ import annotations
 
@@ -35,17 +31,10 @@ from pdf_core import (  # noqa: E402
 from word_convert import word_to_pdf  # noqa: E402
 
 
-<<<<<<< HEAD
 class PDFToolApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("PDFTool - PDF 工具")
-=======
-class QYPdfToolApp(tk.Tk):
-    def __init__(self) -> None:
-        super().__init__()
-        self.title("QYPdfTool - PDF 工具")
->>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
         self.geometry("660x560")
         self.minsize(580, 500)
         self._build_ui()
@@ -470,11 +459,7 @@ class QYPdfToolApp(tk.Tk):
 
 
 def main() -> None:
-<<<<<<< HEAD
     app = PDFToolApp()
-=======
-    app = QYPdfToolApp()
->>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
     app.mainloop()
 
 
