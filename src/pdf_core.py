@@ -206,6 +206,11 @@ def _build_image_overlay(
     target_w = max(32.0, page_w * max(0.05, min(float(scale), 1.0)))
     ratio = target_w / float(img_w)
     target_h = img_h * ratio
+    # Resize to final draw size first, so PDF does not embed oversized source bitmap.
+    draw_w = max(1, int(round(target_w)))
+    draw_h = max(1, int(round(target_h)))
+    draw_img = img.resize((draw_w, draw_h), Image.LANCZOS)
+    draw_reader = ImageReader(draw_img)
     packet = BytesIO()
     c = canvas.Canvas(packet, pagesize=(page_w, page_h))
     for x, y in _layout_points(page_w, page_h, target_w, target_h, position, layout):
@@ -215,7 +220,7 @@ def _build_image_overlay(
             c.translate(cx, cy)
             c.rotate(angle)
             c.drawImage(
-                ImageReader(img),
+                draw_reader,
                 -target_w / 2.0,
                 -target_h / 2.0,
                 width=target_w,
@@ -223,7 +228,7 @@ def _build_image_overlay(
                 mask="auto",
             )
         else:
-            c.drawImage(ImageReader(img), x, y, width=target_w, height=target_h, mask="auto")
+            c.drawImage(draw_reader, x, y, width=target_w, height=target_h, mask="auto")
         c.restoreState()
     c.save()
     return packet.getvalue()
