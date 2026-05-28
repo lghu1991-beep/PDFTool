@@ -35,23 +35,25 @@ class PDFToolApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
         self.title("PDFTool - PDF 工具")
-        self.geometry("660x560")
-        self.minsize(580, 500)
+        self.geometry("800x640")
+        self.minsize(700, 560)
         self._build_ui()
 
     def _build_ui(self) -> None:
         style = ttk.Style(self)
         if "vista" in style.theme_names():
             style.theme_use("vista")
+        style.configure("TButton", padding=(10, 6))
+        style.configure("TLabelframe", padding=(8, 6))
 
         notebook = ttk.Notebook(self)
-        notebook.pack(fill=tk.BOTH, expand=True, padx=10, pady=10)
+        notebook.pack(fill=tk.BOTH, expand=True, padx=14, pady=14)
 
-        self._tab_word = ttk.Frame(notebook, padding=12)
-        self._tab_watermark = ttk.Frame(notebook, padding=12)
-        self._tab_compress = ttk.Frame(notebook, padding=12)
-        self._tab_merge = ttk.Frame(notebook, padding=12)
-        self._tab_split = ttk.Frame(notebook, padding=12)
+        self._tab_word = ttk.Frame(notebook, padding=16)
+        self._tab_watermark = ttk.Frame(notebook, padding=16)
+        self._tab_compress = ttk.Frame(notebook, padding=16)
+        self._tab_merge = ttk.Frame(notebook, padding=16)
+        self._tab_split = ttk.Frame(notebook, padding=16)
 
         notebook.add(self._tab_word, text="Word 转 PDF")
         notebook.add(self._tab_watermark, text="水印")
@@ -67,7 +69,7 @@ class PDFToolApp(tk.Tk):
 
         self.status = tk.StringVar(value="就绪")
         ttk.Label(self, textvariable=self.status, anchor=tk.W).pack(
-            fill=tk.X, padx=10, pady=(0, 8)
+            fill=tk.X, padx=14, pady=(0, 10)
         )
 
     def _build_word_tab(self) -> None:
@@ -77,7 +79,7 @@ class PDFToolApp(tk.Tk):
             text="支持 .doc / .docx / .wps / .rtf 等。\n"
             "优先使用 LibreOffice 转换（免费）；未安装时尝试 Microsoft Word。",
             justify=tk.LEFT,
-        ).pack(anchor=tk.W)
+        ).pack(anchor=tk.W, pady=(0, 8))
 
         self.word_input = tk.StringVar()
         self.word_output = tk.StringVar()
@@ -98,7 +100,7 @@ class PDFToolApp(tk.Tk):
         self._save_row(frame, "输出 PDF", self.wm_output, [("PDF", "*.pdf")])
 
         mode_row = ttk.Frame(frame)
-        mode_row.pack(fill=tk.X, pady=(8, 4))
+        mode_row.pack(fill=tk.X, pady=(10, 6))
         ttk.Label(mode_row, text="水印类型", width=10).pack(side=tk.LEFT)
         ttk.Radiobutton(mode_row, text="文字", variable=self.wm_mode, value="text", command=self._sync_wm_mode).pack(
             side=tk.LEFT
@@ -107,12 +109,14 @@ class PDFToolApp(tk.Tk):
             side=tk.LEFT, padx=8
         )
 
-        self.wm_text_frame = ttk.Frame(frame)
-        self.wm_text_frame.pack(fill=tk.X, pady=4)
+        self.wm_text_frame = ttk.LabelFrame(frame, text="文字水印设置")
+        self.wm_text_frame.pack(fill=tk.X, pady=6)
         self.wm_text = tk.StringVar(value="机密")
         self.wm_opacity = tk.DoubleVar(value=0.25)
         self.wm_angle = tk.DoubleVar(value=45.0)
         self.wm_font = tk.IntVar(value=48)
+        self.wm_text_position = tk.StringVar(value="center")
+        self.wm_layout = tk.StringVar(value="single")
 
         row = ttk.Frame(self.wm_text_frame)
         row.pack(fill=tk.X, pady=4)
@@ -125,7 +129,28 @@ class PDFToolApp(tk.Tk):
         ttk.Entry(row3, textvariable=self.wm_angle, width=8).pack(side=tk.LEFT)
         ttk.Entry(row3, textvariable=self.wm_font, width=8).pack(side=tk.LEFT, padx=(8, 0))
 
-        self.wm_image_frame = ttk.Frame(frame)
+        row4 = ttk.Frame(self.wm_text_frame)
+        row4.pack(fill=tk.X, pady=4)
+        ttk.Label(row4, text="文字位置", width=10).pack(side=tk.LEFT)
+        ttk.Combobox(
+            row4,
+            textvariable=self.wm_text_position,
+            values=[
+                "center",
+                "top-left",
+                "top-center",
+                "top-right",
+                "left-center",
+                "right-center",
+                "bottom-left",
+                "bottom-center",
+                "bottom-right",
+            ],
+            width=16,
+            state="readonly",
+        ).pack(side=tk.LEFT)
+
+        self.wm_image_frame = ttk.LabelFrame(frame, text="图片水印设置")
         self.wm_image_path = tk.StringVar()
         self.wm_scale = tk.DoubleVar(value=0.25)
         self.wm_position = tk.StringVar(value="center")
@@ -157,7 +182,17 @@ class PDFToolApp(tk.Tk):
         ttk.Combobox(
             img_row3,
             textvariable=self.wm_position,
-            values=["center", "top-left", "top-right", "bottom-left", "bottom-right"],
+            values=[
+                "center",
+                "top-left",
+                "top-center",
+                "top-right",
+                "left-center",
+                "right-center",
+                "bottom-left",
+                "bottom-center",
+                "bottom-right",
+            ],
             width=16,
             state="readonly",
         ).pack(side=tk.LEFT)
@@ -166,13 +201,25 @@ class PDFToolApp(tk.Tk):
         ttk.Entry(img_row3, textvariable=self.wm_img_angle, width=8).pack(side=tk.LEFT)
 
         row2 = ttk.Frame(frame)
-        row2.pack(fill=tk.X, pady=4)
+        row2.pack(fill=tk.X, pady=8)
         ttk.Label(row2, text="透明度", width=10).pack(side=tk.LEFT)
         ttk.Scale(row2, from_=0.05, to=0.9, variable=self.wm_opacity, orient=tk.HORIZONTAL).pack(
             side=tk.LEFT, fill=tk.X, expand=True
         )
 
-        ttk.Button(frame, text="添加水印", command=self._run_watermark).pack(anchor=tk.E, pady=(12, 0))
+        row5 = ttk.Frame(frame)
+        row5.pack(fill=tk.X, pady=8)
+        ttk.Label(row5, text="铺设模式", width=10).pack(side=tk.LEFT)
+        ttk.Combobox(
+            row5,
+            textvariable=self.wm_layout,
+            values=["single", "grid", "tile"],
+            width=16,
+            state="readonly",
+        ).pack(side=tk.LEFT)
+        ttk.Label(row5, text="single/九宫格/平铺", foreground="#666").pack(side=tk.LEFT, padx=(10, 0))
+
+        ttk.Button(frame, text="添加水印", command=self._run_watermark).pack(anchor=tk.E, pady=(14, 0))
         self._sync_wm_mode()
 
     def _sync_wm_mode(self) -> None:
@@ -190,7 +237,7 @@ class PDFToolApp(tk.Tk):
             text="轻/中：内置流压缩（纯文本 PDF 适用）\n"
             "强：图片重采样至 72dpi（扫描件/大图 PDF）；若已装 Ghostscript 则优先使用",
             justify=tk.LEFT,
-        ).pack(anchor=tk.W)
+        ).pack(anchor=tk.W, pady=(0, 8))
 
         self.compress_input = tk.StringVar()
         self.compress_output = tk.StringVar()
@@ -200,7 +247,7 @@ class PDFToolApp(tk.Tk):
         self._save_row(frame, "输出 PDF", self.compress_output, [("PDF", "*.pdf")])
 
         level_row = ttk.Frame(frame)
-        level_row.pack(fill=tk.X, pady=8)
+        level_row.pack(fill=tk.X, pady=10)
         ttk.Label(level_row, text="压缩级别", width=10).pack(side=tk.LEFT)
         ttk.Radiobutton(level_row, text="轻", variable=self.compress_level, value="light").pack(side=tk.LEFT)
         ttk.Radiobutton(level_row, text="中（推荐）", variable=self.compress_level, value="medium").pack(
@@ -208,13 +255,13 @@ class PDFToolApp(tk.Tk):
         )
         ttk.Radiobutton(level_row, text="强", variable=self.compress_level, value="strong").pack(side=tk.LEFT)
 
-        ttk.Button(frame, text="开始压缩", command=self._run_compress).pack(anchor=tk.E, pady=(12, 0))
+        ttk.Button(frame, text="开始压缩", command=self._run_compress).pack(anchor=tk.E, pady=(14, 0))
 
     def _build_merge_tab(self) -> None:
         frame = self._tab_merge
-        ttk.Label(frame, text="按顺序合并多个 PDF：").pack(anchor=tk.W)
+        ttk.Label(frame, text="按顺序合并多个 PDF：").pack(anchor=tk.W, pady=(0, 8))
         list_frame = ttk.Frame(frame)
-        list_frame.pack(fill=tk.BOTH, expand=True, pady=8)
+        list_frame.pack(fill=tk.BOTH, expand=True, pady=10)
 
         self.merge_list = tk.Listbox(list_frame, height=8)
         self.merge_list.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
@@ -230,7 +277,7 @@ class PDFToolApp(tk.Tk):
 
         self.merge_output = tk.StringVar()
         self._save_row(frame, "输出 PDF", self.merge_output, [("PDF", "*.pdf")])
-        ttk.Button(frame, text="合并", command=self._run_merge).pack(anchor=tk.E, pady=(8, 0))
+        ttk.Button(frame, text="合并", command=self._run_merge).pack(anchor=tk.E, pady=(12, 0))
 
     def _build_split_tab(self) -> None:
         frame = self._tab_split
@@ -242,13 +289,13 @@ class PDFToolApp(tk.Tk):
         self._file_row(frame, "PDF 文件", self.split_input, [("PDF", "*.pdf")])
 
         dir_row = ttk.Frame(frame)
-        dir_row.pack(fill=tk.X, pady=6)
+        dir_row.pack(fill=tk.X, pady=8)
         ttk.Label(dir_row, text="输出目录", width=10).pack(side=tk.LEFT)
         ttk.Entry(dir_row, textvariable=self.split_output_dir).pack(side=tk.LEFT, fill=tk.X, expand=True)
         ttk.Button(dir_row, text="选择", command=self._pick_split_dir).pack(side=tk.LEFT, padx=4)
 
         mode_row = ttk.Frame(frame)
-        mode_row.pack(fill=tk.X, pady=6)
+        mode_row.pack(fill=tk.X, pady=8)
         ttk.Radiobutton(mode_row, text="按页码范围（如 1-3,5-8）", variable=self.split_mode, value="range").pack(
             anchor=tk.W
         )
@@ -257,17 +304,17 @@ class PDFToolApp(tk.Tk):
         )
 
         range_row = ttk.Frame(frame)
-        range_row.pack(fill=tk.X, pady=6)
+        range_row.pack(fill=tk.X, pady=8)
         ttk.Label(range_row, text="页码范围", width=10).pack(side=tk.LEFT)
         ttk.Entry(range_row, textvariable=self.split_range).pack(side=tk.LEFT, fill=tk.X, expand=True)
 
-        ttk.Button(frame, text="拆分", command=self._run_split).pack(anchor=tk.E, pady=(12, 0))
+        ttk.Button(frame, text="拆分", command=self._run_split).pack(anchor=tk.E, pady=(14, 0))
 
     def _file_row(self, parent, label, variable, filetypes):
         row = ttk.Frame(parent)
-        row.pack(fill=tk.X, pady=6)
+        row.pack(fill=tk.X, pady=8)
         ttk.Label(row, text=label, width=10).pack(side=tk.LEFT)
-        ttk.Entry(row, textvariable=variable).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        ttk.Entry(row, textvariable=variable).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
 
         def pick():
             path = filedialog.askopenfilename(filetypes=filetypes)
@@ -286,9 +333,9 @@ class PDFToolApp(tk.Tk):
 
     def _save_row(self, parent, label, variable, filetypes):
         row = ttk.Frame(parent)
-        row.pack(fill=tk.X, pady=6)
+        row.pack(fill=tk.X, pady=8)
         ttk.Label(row, text=label, width=10).pack(side=tk.LEFT)
-        ttk.Entry(row, textvariable=variable).pack(side=tk.LEFT, fill=tk.X, expand=True)
+        ttk.Entry(row, textvariable=variable).pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 6))
 
         def pick():
             path = filedialog.asksaveasfilename(defaultextension=".pdf", filetypes=filetypes)
@@ -399,6 +446,7 @@ class PDFToolApp(tk.Tk):
                     scale=self.wm_scale.get(),
                     angle=float(self.wm_img_angle.get()),
                     position=self.wm_position.get(),  # type: ignore[arg-type]
+                    layout=self.wm_layout.get(),  # type: ignore[arg-type]
                 )
             else:
                 add_text_watermark(
@@ -408,6 +456,8 @@ class PDFToolApp(tk.Tk):
                     opacity=opacity,
                     angle=float(self.wm_angle.get()),
                     font_size=int(self.wm_font.get()),
+                    position=self.wm_text_position.get(),  # type: ignore[arg-type]
+                    layout=self.wm_layout.get(),  # type: ignore[arg-type]
                 )
             return dst
 

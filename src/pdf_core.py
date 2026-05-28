@@ -14,9 +14,22 @@ from PIL import Image
 from pypdf import PdfReader, PdfWriter
 from reportlab.lib.colors import Color
 from reportlab.lib.utils import ImageReader
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.pdfgen import canvas
 
-WatermarkPosition = Literal["center", "top-left", "top-right", "bottom-left", "bottom-right"]
+WatermarkPosition = Literal[
+    "center",
+    "top-left",
+    "top-center",
+    "top-right",
+    "left-center",
+    "right-center",
+    "bottom-left",
+    "bottom-center",
+    "bottom-right",
+]
+WatermarkLayout = Literal["single", "grid", "tile"]
 CompressLevel = Literal["light", "medium", "strong"]
 
 
@@ -80,16 +93,23 @@ def _build_text_overlay(
     opacity: float,
     angle: float,
     font_size: int,
+    position: WatermarkPosition,
+    layout: WatermarkLayout,
 ) -> bytes:
+    font_name = _pick_text_font(text)
+    text_width = max(24.0, pdfmetrics.stringWidth(text, font_name, font_size))
+    text_height = max(16.0, font_size * 1.2)
     packet = BytesIO()
     c = canvas.Canvas(packet, pagesize=(width, height))
-    c.saveState()
-    c.setFillColor(Color(0, 0, 0, alpha=opacity))
-    c.setFont("Helvetica-Bold", font_size)
-    c.translate(width / 2.0, height / 2.0)
-    c.rotate(angle)
-    c.drawCentredString(0, 0, text)
-    c.restoreState()
+    for x, y in _layout_points(width, height, text_width, text_height, position, layout):
+        c.saveState()
+        c.setFillColor(Color(0, 0, 0, alpha=opacity))
+        c.setFont(font_name, font_size)
+        cx, cy = x + text_width / 2.0, y + text_height / 2.0
+        c.translate(cx, cy)
+        c.rotate(angle)
+        c.drawCentredString(0, -font_size * 0.35, text)
+        c.restoreState()
     c.save()
     return packet.getvalue()
 
@@ -106,11 +126,59 @@ def _position_xy(
         return (page_w - img_w) / 2.0, (page_h - img_h) / 2.0
     if position == "top-left":
         return margin, page_h - img_h - margin
+    if position == "top-center":
+        return (page_w - img_w) / 2.0, page_h - img_h - margin
     if position == "top-right":
         return page_w - img_w - margin, page_h - img_h - margin
+    if position == "left-center":
+        return margin, (page_h - img_h) / 2.0
+    if position == "right-center":
+        return page_w - img_w - margin, (page_h - img_h) / 2.0
     if position == "bottom-left":
         return margin, margin
+    if position == "bottom-center":
+        return (page_w - img_w) / 2.0, margin
     return page_w - img_w - margin, margin
+
+
+def _layout_points(
+    page_w: float,
+    page_h: float,
+    obj_w: float,
+    obj_h: float,
+    position: WatermarkPosition,
+    layout: WatermarkLayout,
+) -> List[Tuple[float, float]]:
+    if layout == "single":
+        return [_position_xy(position, page_w, page_h, obj_w, obj_h)]
+    if layout == "grid":
+        xs = [24.0, (page_w - obj_w) / 2.0, max(24.0, page_w - obj_w - 24.0)]
+        ys = [24.0, (page_h - obj_h) / 2.0, max(24.0, page_h - obj_h - 24.0)]
+        return [(x, y) for y in ys for x in xs]
+
+    step_x = max(obj_w * 1.8, 120.0)
+    step_y = max(obj_h * 2.2, 90.0)
+    points: List[Tuple[float, float]] = []
+    y = 24.0
+    row = 0
+    while y <= page_h - obj_h:
+        x = 24.0 + (step_x * 0.4 if row % 2 else 0.0)
+        while x <= page_w - obj_w:
+            points.append((x, y))
+            x += step_x
+        y += step_y
+        row += 1
+    return points or [_position_xy(position, page_w, page_h, obj_w, obj_h)]
+
+
+def _pick_text_font(text: str) -> str:
+    # CJK text needs CID font; Helvetica cannot render Chinese.
+    if any(ord(ch) > 127 for ch in text):
+        font_name = "STSong-Light"
+        if font_name not in pdfmetrics.getRegisteredFontNames():
+            pdfmetrics.registerFont(UnicodeCIDFont(font_name))
+        return font_name
+    return "Helvetica-Bold"
 
 
 def _load_rgba_image(image_path: str, opacity: float) -> Image.Image:
@@ -131,32 +199,32 @@ def _build_image_overlay(
     scale: float,
     angle: float,
     position: WatermarkPosition,
+    layout: WatermarkLayout,
 ) -> bytes:
     img = _load_rgba_image(image_path, opacity)
     img_w, img_h = img.size
     target_w = max(32.0, page_w * max(0.05, min(float(scale), 1.0)))
     ratio = target_w / float(img_w)
     target_h = img_h * ratio
-    x, y = _position_xy(position, page_w, page_h, target_w, target_h)
-
     packet = BytesIO()
     c = canvas.Canvas(packet, pagesize=(page_w, page_h))
-    c.saveState()
-    if abs(angle) > 0.01:
-        cx, cy = x + target_w / 2.0, y + target_h / 2.0
-        c.translate(cx, cy)
-        c.rotate(angle)
-        c.drawImage(
-            ImageReader(img),
-            -target_w / 2.0,
-            -target_h / 2.0,
-            width=target_w,
-            height=target_h,
-            mask="auto",
-        )
-    else:
-        c.drawImage(ImageReader(img), x, y, width=target_w, height=target_h, mask="auto")
-    c.restoreState()
+    for x, y in _layout_points(page_w, page_h, target_w, target_h, position, layout):
+        c.saveState()
+        if abs(angle) > 0.01:
+            cx, cy = x + target_w / 2.0, y + target_h / 2.0
+            c.translate(cx, cy)
+            c.rotate(angle)
+            c.drawImage(
+                ImageReader(img),
+                -target_w / 2.0,
+                -target_h / 2.0,
+                width=target_w,
+                height=target_h,
+                mask="auto",
+            )
+        else:
+            c.drawImage(ImageReader(img), x, y, width=target_w, height=target_h, mask="auto")
+        c.restoreState()
     c.save()
     return packet.getvalue()
 
@@ -183,13 +251,15 @@ def add_text_watermark(
     opacity: float = 0.25,
     angle: float = 45.0,
     font_size: int = 48,
+    position: WatermarkPosition = "center",
+    layout: WatermarkLayout = "single",
 ) -> None:
     if not text.strip():
         raise ValueError("水印文字不能为空")
     alpha = max(0.05, min(float(opacity), 1.0))
 
     def builder(width: float, height: float) -> bytes:
-        return _build_text_overlay(width, height, text, alpha, angle, font_size)
+        return _build_text_overlay(width, height, text, alpha, angle, font_size, position, layout)
 
     _apply_overlay_pages(input_path, output_path, builder)
 
@@ -202,9 +272,10 @@ def add_image_watermark(
     scale: float = 0.25,
     angle: float = 0.0,
     position: WatermarkPosition = "center",
+    layout: WatermarkLayout = "single",
 ) -> None:
     def builder(width: float, height: float) -> bytes:
-        return _build_image_overlay(width, height, image_path, opacity, scale, angle, position)
+        return _build_image_overlay(width, height, image_path, opacity, scale, angle, position, layout)
 
     _apply_overlay_pages(input_path, output_path, builder)
 
