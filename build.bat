@@ -1,5 +1,6 @@
 @echo off
 chcp 65001 >nul
+<<<<<<< HEAD
 setlocal EnableExtensions
 
 cd /d "%~dp0"
@@ -18,10 +19,23 @@ if not exist "%PY%" (
 "%PY%" -c "import tkinter" >nul 2>&1
 if errorlevel 1 (
   echo [错误] 当前 Python 未包含 tkinter，请重新运行：安装Python环境.bat
+=======
+setlocal
+
+cd /d "%~dp0"
+
+echo === QYPdfTool Windows 打包 ===
+
+where python >nul 2>&1
+if errorlevel 1 (
+  echo 未找到 Python，请先安装 Python 3.10+ 并勾选 Add to PATH
+  echo 下载：https://www.python.org/downloads/windows/
+>>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
   pause
   exit /b 1
 )
 
+<<<<<<< HEAD
 echo 使用 Python：%PY%
 "%PY%" -m pip install -U pip
 "%PY%" -m pip install -r "%PDFTOOL_ROOT%\requirements.txt"
@@ -35,6 +49,14 @@ if errorlevel 1 (
 echo.
 echo 开始打包单文件 exe ...
 "%PY%" -m PyInstaller --noconfirm --clean "%PDFTOOL_ROOT%\PDFTool.spec"
+=======
+python -m pip install -U pip
+python -m pip install -r requirements.txt
+
+echo.
+echo 开始打包单文件 exe ...
+python -m PyInstaller --noconfirm --clean QYPdfTool.spec
+>>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
 
 if errorlevel 1 (
   echo 打包失败
@@ -42,13 +64,19 @@ if errorlevel 1 (
   exit /b 1
 )
 
+<<<<<<< HEAD
 if not exist "%PDFTOOL_ROOT%\dist\PDFTool.exe" (
   echo 未找到 dist\PDFTool.exe
+=======
+if not exist "dist\QYPdfTool.exe" (
+  echo 未找到 dist\QYPdfTool.exe
+>>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
   pause
   exit /b 1
 )
 
 echo.
+<<<<<<< HEAD
 echo 成功：%PDFTOOL_ROOT%\dist\PDFTool.exe
 for %%A in ("%PDFTOOL_ROOT%\dist\PDFTool.exe") do echo 大小：%%~zA 字节
 echo.
@@ -56,3 +84,13 @@ echo 可将 dist\PDFTool.exe 单独拷贝到任意目录双击运行
 echo Word 转 PDF 需本机安装 LibreOffice 或 Microsoft Word
 echo.
 if "%~1" neq "silent" pause
+=======
+echo 成功：dist\QYPdfTool.exe
+for %%A in ("dist\QYPdfTool.exe") do echo 大小：%%~zA 字节
+echo.
+echo 功能：Word转PDF / 文字·图片水印 / PDF压缩 / 合并 / 拆分
+echo Word 转 PDF 需本机安装 LibreOffice（推荐）或 Microsoft Word
+echo LibreOffice: https://www.libreoffice.org/download/
+echo.
+pause
+>>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
