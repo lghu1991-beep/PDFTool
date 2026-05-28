@@ -1,31 +1,12 @@
-<<<<<<< HEAD
 PDFTool - Windows 使用说明
-================================
-
-【方式零】使用内置 Python 环境包（推荐新手）
-------------------------------------------
-1. 将整个 PDFTool 文件夹复制到 Windows（含 runtime 目录）
-2. 双击：安装Python环境.bat
-3. 双击：安装依赖并运行.bat（需联网安装依赖一次）
-
-=======
-QYPdfTool - Windows 使用说明
-================================
-
->>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
 【方式一】生成独立 exe（推荐，无需 Python）
 ------------------------------------------
 1. 将整个文件夹复制到 Windows 电脑
 2. 双击运行：安装并打包.bat
    （或已装 Python 时直接双击 build.bat）
 3. 等待 2~5 分钟，完成后得到：
-<<<<<<< HEAD
    dist\PDFTool.exe
 4. 双击 PDFTool.exe 即可使用，可拷贝到任意目录
-=======
-   dist\QYPdfTool.exe
-4. 双击 QYPdfTool.exe 即可使用，可拷贝到任意目录
->>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
 
 【方式二】开发模式（需已安装 Python）
 ------------------------------------------

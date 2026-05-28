@@ -3,11 +3,7 @@
 set -e
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 OUT="$ROOT/release"
-<<<<<<< HEAD
 ZIP="$OUT/PDFTool-Windows.zip"
-=======
-ZIP="$OUT/QYPdfTool-Windows.zip"
->>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
 
 mkdir -p "$OUT"
 rm -f "$ZIP"
@@ -16,7 +12,6 @@ cd "$ROOT"
 zip -r "$ZIP" \
   src \
   requirements.txt \
-<<<<<<< HEAD
   PDFTool.spec \
   build.bat \
   run-dev.bat \
@@ -31,13 +26,6 @@ zip -r "$ZIP" \
   runtime/说明.txt \
   使用说明-Windows.txt \
   从压缩包到exe完整步骤.txt \
-=======
-  QYPdfTool.spec \
-  build.bat \
-  run-dev.bat \
-  安装并打包.bat \
-  使用说明-Windows.txt \
->>>>>>> ea23488 (chore: QYPdfTool 初始版本，GitHub Actions 自动打包 Windows exe)
   README.md \
   -x "*.pyc" -x "*__pycache__*"
 
