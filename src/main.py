@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import os
+import hashlib
 import sys
 import threading
 import tkinter as tk
@@ -29,6 +30,10 @@ from pdf_core import (  # noqa: E402
     split_pdf,
 )
 from word_convert import word_to_pdf  # noqa: E402
+
+AUTH_MAX_RETRY = 3
+# Default password: 18RnPiodb.
+AUTH_PASSWORD_SHA256 = "a3dbd9941a7e6f31eecbdcf93ee8e822a1c3228f75fe3596ec2cd0de690d27d1"
 
 
 class PDFToolApp(tk.Tk):
@@ -508,8 +513,60 @@ class PDFToolApp(tk.Tk):
         self._run_async("拆分 PDF", job)
 
 
+def _verify_startup_password(root: tk.Tk) -> bool:
+    for _ in range(AUTH_MAX_RETRY):
+        dialog = tk.Toplevel(root)
+        dialog.title("身份验证")
+        dialog.transient(root)
+        dialog.grab_set()
+        dialog.resizable(False, False)
+        dialog.protocol("WM_DELETE_WINDOW", lambda: None)
+
+        result = {"ok": False, "password": ""}
+
+        frame = ttk.Frame(dialog, padding=14)
+        frame.pack(fill=tk.BOTH, expand=True)
+        ttk.Label(frame, text="请输入使用密码：").pack(anchor=tk.W)
+        pwd_var = tk.StringVar()
+        entry = ttk.Entry(frame, textvariable=pwd_var, show="*")
+        entry.pack(fill=tk.X, pady=(8, 12))
+        entry.focus_set()
+
+        btns = ttk.Frame(frame)
+        btns.pack(fill=tk.X)
+
+        def on_confirm() -> None:
+            result["ok"] = True
+            result["password"] = pwd_var.get()
+            dialog.destroy()
+
+        def on_cancel() -> None:
+            dialog.destroy()
+
+        ttk.Button(btns, text="取消", command=on_cancel).pack(side=tk.RIGHT)
+        ttk.Button(btns, text="确定", command=on_confirm).pack(side=tk.RIGHT, padx=(0, 8))
+        dialog.bind("<Return>", lambda _e: on_confirm())
+        dialog.bind("<Escape>", lambda _e: on_cancel())
+
+        root.wait_window(dialog)
+        if not result["ok"]:
+            return False
+
+        digest = hashlib.sha256(result["password"].encode("utf-8")).hexdigest()
+        if digest == AUTH_PASSWORD_SHA256:
+            return True
+        messagebox.showerror("错误", "密码错误，请重试。", parent=root)
+    messagebox.showerror("错误", "密码错误次数过多，程序将退出。", parent=root)
+    return False
+
+
 def main() -> None:
     app = PDFToolApp()
+    app.withdraw()
+    if not _verify_startup_password(app):
+        app.destroy()
+        return
+    app.deiconify()
     app.mainloop()
 
 
