@@ -1,0 +1,33 @@
+name: Build macOS App
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [mac]
+
+jobs:
+  build:
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: python3 -m pip install -U pip && pip install -r requirements.txt
+
+      - name: Build PDFTool.app
+        run: python3 -m PyInstaller --noconfirm --clean PDFTool-mac.spec
+
+      - name: Verify app
+        run: test -d dist/PDFTool.app && ls -la dist/PDFTool.app/Contents/MacOS/
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: PDFTool-macOS
+          path: dist/PDFTool.app
+          retention-days: 90

@@ -44,7 +44,10 @@ AUTH_PASSWORD_SHA256 = "a3dbd9941a7e6f31eecbdcf93ee8e822a1c3228f75fe3596ec2cd0de
 class PDFToolApp(tk.Tk):
     def __init__(self) -> None:
         super().__init__()
-        self.title("PDFTool - PDF 工具")
+        title = "PDFTool - PDF 工具"
+        if sys.platform == "darwin":
+            title = "PDFTool - PDF 工具 (macOS)"
+        self.title(title)
         self.geometry("800x640")
         self.minsize(700, 560)
         self._build_ui()

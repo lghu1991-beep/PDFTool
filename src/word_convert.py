@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Word / Office 文档转 PDF（Windows）。"""
+"""Word / Office 文档转 PDF（Windows / macOS）。"""
 
 from __future__ import annotations
 
@@ -15,30 +15,33 @@ OFFICE_EXTS = {".doc", ".docx", ".wps", ".rtf", ".odt", ".xls", ".xlsx", ".ppt",
 
 
 def _libreoffice_paths() -> List[str]:
-    if sys.platform != "win32":
-        return []
-    candidates = [
-        r"C:\Program Files\LibreOffice\program\soffice.exe",
-        r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
-        r"C:\Program Files\LibreOffice\program\soffice.com",
-    ]
+    candidates: List[str] = []
     env_path = os.environ.get("LIBREOFFICE_PATH", "").strip()
     if env_path:
-        candidates.insert(0, env_path)
+        candidates.append(env_path)
+
+    if sys.platform == "darwin":
+        candidates.extend([
+            "/Applications/LibreOffice.app/Contents/MacOS/soffice",
+            "/Applications/LibreOffice.app/Contents/MacOS/soffice.bin",
+        ])
+    elif sys.platform == "win32":
+        candidates.extend([
+            r"C:\Program Files\LibreOffice\program\soffice.exe",
+            r"C:\Program Files (x86)\LibreOffice\program\soffice.exe",
+            r"C:\Program Files\LibreOffice\program\soffice.com",
+        ])
+
     return [p for p in candidates if os.path.isfile(p)]
 
 
 def _find_soffice() -> Optional[str]:
     for path in _libreoffice_paths():
         return path
-    found = shutil.which("soffice")
-    return found
+    return shutil.which("soffice")
 
 
 def word_to_pdf(input_path: str, output_path: Optional[str] = None) -> str:
-    # Strategy:
-    # 1) Prefer LibreOffice headless (supports more Office formats)
-    # 2) Fallback to Word COM on Windows for doc/docx/rtf
     input_path = os.path.abspath(input_path)
     if not os.path.isfile(input_path):
         raise FileNotFoundError("找不到文件：%s" % input_path)
@@ -67,14 +70,24 @@ def word_to_pdf(input_path: str, output_path: Optional[str] = None) -> str:
                 "详情：%s" % exc
             ) from exc
 
-    raise RuntimeError(
-        "当前系统无法转换 Word。\n"
-        "请在 Windows 上运行，并安装 LibreOffice 或 Microsoft Word。"
-    )
+    if sys.platform == "darwin":
+        raise RuntimeError(
+            "未检测到 LibreOffice。\n"
+            "请安装：https://www.libreoffice.org/download/\n"
+            "或终端执行：brew install --cask libreoffice\n"
+            "安装后可在终端用 soffice --version 验证。"
+        )
+
+    raise RuntimeError("当前系统无法转换 Word，请安装 LibreOffice。")
+
+
+def _subprocess_flags() -> int:
+    if sys.platform == "win32":
+        return getattr(subprocess, "CREATE_NO_WINDOW", 0)
+    return 0
 
 
 def _convert_with_libreoffice(soffice: str, input_path: str, output_path: str) -> str:
-    out_dir = os.path.dirname(output_path) or "."
     with tempfile.TemporaryDirectory() as tmp:
         cmd = [
             soffice,
@@ -94,7 +107,7 @@ def _convert_with_libreoffice(soffice: str, input_path: str, output_path: str) -
             encoding="utf-8",
             errors="replace",
             timeout=180,
-            creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0),
+            creationflags=_subprocess_flags(),
         )
         if proc.returncode != 0:
             raise RuntimeError(
@@ -116,7 +129,7 @@ def _convert_with_libreoffice(soffice: str, input_path: str, output_path: str) -
 
 
 def _convert_with_word_com(input_path: str, output_path: str) -> str:
-    """需要本机安装 Microsoft Word（仅 doc/docx/rtf）。"""
+    """需要本机安装 Microsoft Word（仅 Windows，doc/docx/rtf）。"""
     ext = os.path.splitext(input_path)[1].lower()
     if ext not in {".doc", ".docx", ".rtf"}:
         raise RuntimeError("Word COM 仅支持 .doc / .docx / .rtf，请安装 LibreOffice 处理其他格式")
