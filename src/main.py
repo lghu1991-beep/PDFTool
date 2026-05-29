@@ -7,6 +7,15 @@ import os
 import hashlib
 import sys
 import threading
+
+# PyInstaller .app 若未指定 Tcl/Tk 路径，macOS 上常见「有窗口无内容」
+if getattr(sys, "frozen", False):
+    _meipass = getattr(sys, "_MEIPASS", "")
+    for _lib, _env in (("tcl8.6", "TCL_LIBRARY"), ("tk8.6", "TK_LIBRARY")):
+        _path = os.path.join(_meipass, "lib", _lib)
+        if os.path.isdir(_path):
+            os.environ[_env] = _path
+
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
@@ -50,29 +59,55 @@ class PDFToolApp(tk.Tk):
         self.title(title)
         self.geometry("800x640")
         self.minsize(700, 560)
+        self._notebook = None
         self._build_ui()
 
-    def _build_ui(self) -> None:
+    def _mac_bg(self) -> str:
+        return "#ececec"
+
+    def _setup_style(self) -> ttk.Style:
         style = ttk.Style(self)
-        if "vista" in style.theme_names():
+        if sys.platform == "darwin":
+            if "aqua" in style.theme_names():
+                style.theme_use("aqua")
+            self.configure(bg=self._mac_bg())
+        elif "vista" in style.theme_names():
             style.theme_use("vista")
         style.configure("TButton", padding=(10, 6))
         style.configure("TLabelframe", padding=(8, 6))
+        return style
 
-        notebook = ttk.Notebook(self)
-        notebook.pack(fill=tk.BOTH, expand=True, padx=14, pady=14)
+    def _new_tab_page(self, notebook: ttk.Notebook, title: str) -> tk.Frame:
+        """macOS 上 ttk.Frame 作为 Notebook 子页常空白，改用 tk.Frame + 内层容器。"""
+        if sys.platform == "darwin":
+            page = tk.Frame(notebook, bg=self._mac_bg())
+        else:
+            page = ttk.Frame(notebook, padding=16)
+        notebook.add(page, text=title)
+        inner = tk.Frame(page, bg=self._mac_bg()) if sys.platform == "darwin" else page
+        if sys.platform == "darwin":
+            inner.pack(fill=tk.BOTH, expand=True, padx=16, pady=16)
+        return inner
 
-        self._tab_word = ttk.Frame(notebook, padding=16)
-        self._tab_watermark = ttk.Frame(notebook, padding=16)
-        self._tab_compress = ttk.Frame(notebook, padding=16)
-        self._tab_merge = ttk.Frame(notebook, padding=16)
-        self._tab_split = ttk.Frame(notebook, padding=16)
+    def _label_frame(self, parent: tk.Widget, text: str) -> tk.Widget:
+        if sys.platform == "darwin":
+            return tk.LabelFrame(parent, text=text, bg=self._mac_bg(), padx=8, pady=8)
+        return ttk.LabelFrame(parent, text=text)
 
-        notebook.add(self._tab_word, text="Word 转 PDF")
-        notebook.add(self._tab_watermark, text="水印")
-        notebook.add(self._tab_compress, text="PDF 压缩")
-        notebook.add(self._tab_merge, text="合并 PDF")
-        notebook.add(self._tab_split, text="拆分 PDF")
+    def _build_ui(self) -> None:
+        self._setup_style()
+
+        root_wrap = tk.Frame(self, bg=self._mac_bg()) if sys.platform == "darwin" else ttk.Frame(self)
+        root_wrap.pack(fill=tk.BOTH, expand=True)
+
+        self._notebook = ttk.Notebook(root_wrap)
+        self._notebook.pack(fill=tk.BOTH, expand=True, padx=14, pady=14)
+
+        self._tab_word = self._new_tab_page(self._notebook, "Word 转 PDF")
+        self._tab_watermark = self._new_tab_page(self._notebook, "水印")
+        self._tab_compress = self._new_tab_page(self._notebook, "PDF 压缩")
+        self._tab_merge = self._new_tab_page(self._notebook, "合并 PDF")
+        self._tab_split = self._new_tab_page(self._notebook, "拆分 PDF")
 
         self._build_word_tab()
         self._build_watermark_tab()
@@ -80,10 +115,14 @@ class PDFToolApp(tk.Tk):
         self._build_merge_tab()
         self._build_split_tab()
 
+        self._notebook.select(0)
+
+        status_parent = root_wrap if sys.platform == "darwin" else self
         self.status = tk.StringVar(value="就绪")
-        ttk.Label(self, textvariable=self.status, anchor=tk.W).pack(
+        ttk.Label(status_parent, textvariable=self.status, anchor=tk.W).pack(
             fill=tk.X, padx=14, pady=(0, 10)
         )
+        self.update_idletasks()
 
     def _build_word_tab(self) -> None:
         frame = self._tab_word
@@ -122,7 +161,7 @@ class PDFToolApp(tk.Tk):
             side=tk.LEFT, padx=8
         )
 
-        self.wm_text_frame = ttk.LabelFrame(frame, text="文字水印设置")
+        self.wm_text_frame = self._label_frame(frame, "文字水印设置")
         self.wm_text_frame.pack(fill=tk.X, pady=6)
         self.wm_text = tk.StringVar(value="机密")
         self.wm_opacity = tk.DoubleVar(value=0.25)
@@ -163,7 +202,7 @@ class PDFToolApp(tk.Tk):
             state="readonly",
         ).pack(side=tk.LEFT)
 
-        self.wm_image_frame = ttk.LabelFrame(frame, text="图片水印设置")
+        self.wm_image_frame = self._label_frame(frame, "图片水印设置")
         self.wm_image_path = tk.StringVar()
         self.wm_scale = tk.DoubleVar(value=0.25)
         self.wm_position = tk.StringVar(value="center")

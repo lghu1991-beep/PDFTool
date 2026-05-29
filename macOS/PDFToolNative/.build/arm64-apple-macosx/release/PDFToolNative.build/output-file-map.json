@@ -1,0 +1,43 @@
+{
+  "": {
+    "dependencies": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/PDFToolNative.d",
+    "object": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/PDFToolNative.o",
+    "swift-dependencies": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/primary.swiftdeps"
+  },
+  "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/AppState.swift": {
+    "object": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/AppState.swift.o",
+    "swiftmodule": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/AppState~partial.swiftmodule",
+    "swift-dependencies": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/AppState.swiftdeps",
+    "diagnostics": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/AppState.dia"
+  },
+  "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/ContentView.swift": {
+    "object": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/ContentView.swift.o",
+    "swiftmodule": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/ContentView.swiftdeps",
+    "diagnostics": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/ContentView.dia"
+  },
+  "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/EngineClient.swift": {
+    "object": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/EngineClient.swift.o",
+    "swiftmodule": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/EngineClient~partial.swiftmodule",
+    "swift-dependencies": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/EngineClient.swiftdeps",
+    "diagnostics": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/EngineClient.dia"
+  },
+  "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FeatureViews.swift": {
+    "object": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FeatureViews.swift.o",
+    "swiftmodule": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FeatureViews~partial.swiftmodule",
+    "swift-dependencies": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FeatureViews.swiftdeps",
+    "diagnostics": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FeatureViews.dia"
+  },
+  "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FilePathRow.swift": {
+    "object": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FilePathRow.swift.o",
+    "swiftmodule": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FilePathRow~partial.swiftmodule",
+    "swift-dependencies": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FilePathRow.swiftdeps",
+    "diagnostics": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FilePathRow.dia"
+  },
+  "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/PDFToolNativeApp.swift": {
+    "object": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/PDFToolNativeApp.swift.o",
+    "swiftmodule": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/PDFToolNativeApp~partial.swiftmodule",
+    "swift-dependencies": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/PDFToolNativeApp.swiftdeps",
+    "diagnostics": "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/PDFToolNativeApp.dia"
+  }
+}

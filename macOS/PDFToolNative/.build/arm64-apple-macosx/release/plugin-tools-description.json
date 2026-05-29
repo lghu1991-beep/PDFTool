@@ -1,0 +1,326 @@
+{
+  "builtTestProducts" : [
+
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.PDFToolNative-arm64-apple-macosx-release.module" : {
+      "executable" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "fileList" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/sources",
+      "importPath" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/AppState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/EngineClient.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FeatureViews.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FilePathRow.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/PDFToolNativeApp.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/sources"
+        }
+      ],
+      "isLibrary" : false,
+      "moduleName" : "PDFToolNative",
+      "moduleOutputPath" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/Modules/PDFToolNative.swiftmodule",
+      "objects" : [
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/AppState.swift.o",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/ContentView.swift.o",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/EngineClient.swift.o",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FeatureViews.swift.o",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FilePathRow.swift.o",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/PDFToolNativeApp.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "arm64-apple-macosx13.0",
+        "-whole-module-optimization",
+        "-num-threads",
+        "8",
+        "-serialize-diagnostics",
+        "-O",
+        "-j8",
+        "-DSWIFT_PACKAGE",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/ModuleCache",
+        "-parseable-output",
+        "-Xfrontend",
+        "-entry-point-function-name",
+        "-Xfrontend",
+        "PDFToolNative_main",
+        "-swift-version",
+        "5",
+        "-plugin-path",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-F",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-I",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-L",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+        "-g",
+        "-Xcc",
+        "-isysroot",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+        "-Xcc",
+        "-F",
+        "-Xcc",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "pdftoolnative"
+      ],
+      "outputFileMapPath" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/AppState.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/EngineClient.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FeatureViews.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FilePathRow.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/PDFToolNativeApp.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/Modules/PDFToolNative.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/AppState.swift",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/ContentView.swift",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/EngineClient.swift",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FeatureViews.swift",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FilePathRow.swift",
+        "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/PDFToolNativeApp.swift"
+      ],
+      "tempsPath" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build",
+      "wholeModuleOptimization" : true
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "PDFToolNative" : [
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+      "-module-name",
+      "PDFToolNative",
+      "-package-name",
+      "pdftoolnative",
+      "-c",
+      "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/AppState.swift",
+      "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/ContentView.swift",
+      "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/EngineClient.swift",
+      "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FeatureViews.swift",
+      "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FilePathRow.swift",
+      "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/PDFToolNativeApp.swift",
+      "-I",
+      "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/Modules",
+      "-target",
+      "arm64-apple-macosx13.0",
+      "-whole-module-optimization",
+      "-num-threads",
+      "8",
+      "-serialize-diagnostics",
+      "-O",
+      "-j8",
+      "-DSWIFT_PACKAGE",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/ModuleCache",
+      "-parseable-output",
+      "-Xfrontend",
+      "-entry-point-function-name",
+      "-Xfrontend",
+      "PDFToolNative_main",
+      "-swift-version",
+      "5",
+      "-plugin-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing",
+      "-sdk",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-F",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-I",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-L",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib",
+      "-g",
+      "-Xcc",
+      "-isysroot",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX26.5.sdk",
+      "-Xcc",
+      "-F",
+      "-Xcc",
+      "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "pdftoolnative",
+      "-driver-use-frontend-path",
+      "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "PDFToolNative" : [
+
+    ]
+  },
+  "testDiscoveryCommands" : {
+
+  },
+  "testEntryPointCommands" : {
+
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/AppState.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/EngineClient.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FeatureViews.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/FilePathRow.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/Sources/PDFToolNative/PDFToolNativeApp.swift"
+        }
+      ],
+      "outputFilePath" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/sources"
+    },
+    "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/AppState.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/EngineClient.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FeatureViews.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/FilePathRow.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.build/PDFToolNativeApp.swift.o"
+        }
+      ],
+      "outputFilePath" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/PDFToolNative.product/Objects.LinkFileList"
+    },
+    "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/Users/huliguo/PDFTool/macOS/PDFToolNative/.build/arm64-apple-macosx/release/swift-version--58304C5D6DBC2206.txt"
+    }
+  }
+}

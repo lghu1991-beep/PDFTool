@@ -235,20 +235,41 @@ def _build_image_overlay(
     return packet.getvalue()
 
 
+def _page_overlay_size(page) -> Tuple[float, float]:
+    """按页面可见区域（cropbox）计算水印画布尺寸。"""
+    box = page.cropbox if page.cropbox else page.mediabox
+    return max(float(box.width), 1.0), max(float(box.height), 1.0)
+
+
+def _normalize_page_rotation(page) -> None:
+    """把 /Rotate 烘焙进内容，避免水印在部分页错位或落在可视区域外。"""
+    try:
+        rotation = int(page.get("/Rotate", 0) or 0) % 360
+    except (TypeError, ValueError):
+        return
+    if rotation == 0:
+        return
+    try:
+        page.transfer_rotation_to_content()
+    except Exception:
+        pass
+
+
 def _apply_overlay_pages(input_path: str, output_path: str, overlay_builder) -> None:
-    # Core watermark pipeline:
-    # 1) build per-page overlay PDF in memory
-    # 2) merge overlay into original page content
-    # 3) write merged result directly (no implicit auto-compress here)
+    # 1) 按页生成 overlay PDF
+    # 2) 合并到每一页（须 clone 页面，否则部分 PDF 只有首页有水印）
+    # 3) 写出结果
     reader = PdfReader(input_path)
     writer = PdfWriter()
-    for page in reader.pages:
-        width = float(page.mediabox.width)
-        height = float(page.mediabox.height)
+    writer.append(reader)
+
+    for page in writer.pages:
+        _normalize_page_rotation(page)
+        width, height = _page_overlay_size(page)
         overlay_bytes = overlay_builder(width, height)
         overlay_page = PdfReader(BytesIO(overlay_bytes)).pages[0]
-        page.merge_page(overlay_page)
-        writer.add_page(page)
+        page.merge_page(overlay_page, over=True)
+
     _ensure_parent_dir(output_path)
     with open(output_path, "wb") as f:
         writer.write(f)

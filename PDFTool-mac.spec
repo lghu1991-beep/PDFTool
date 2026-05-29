@@ -1,11 +1,27 @@
 # -*- mode: python ; coding: utf-8 -*-
 """macOS 打包：生成 dist/PDFTool.app"""
 
-from PyInstaller.utils.hooks import collect_all
+import os
+import sys
+
+from PyInstaller.utils.hooks import collect_all, collect_data_files
 
 block_cipher = None
 datas = []
 binaries = []
+
+# macOS 打包必须带上 Tcl/Tk 资源，否则窗口有框无内容
+try:
+    datas += collect_data_files("tkinter")
+except Exception:
+    pass
+if sys.platform == "darwin":
+    for lib_name in ("tcl8.6", "tk8.6"):
+        for base in (sys.base_prefix, os.path.join(sys.base_prefix, "Frameworks")):
+            candidate = os.path.join(base, "lib", lib_name)
+            if os.path.isdir(candidate):
+                datas.append((candidate, os.path.join("lib", lib_name)))
+                break
 hiddenimports = [
     "pdf_core",
     "word_convert",
