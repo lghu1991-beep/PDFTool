@@ -11,8 +11,11 @@ from typing import Optional
 
 
 def log_path() -> str:
-    base = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
-    folder = os.path.join(base, "PDFTool")
+    if sys.platform == "darwin":
+        folder = os.path.join(os.path.expanduser("~"), "Library", "Logs", "PDFTool")
+    else:
+        base = os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")
+        folder = os.path.join(base, "PDFTool")
     os.makedirs(folder, exist_ok=True)
     return os.path.join(folder, "startup.log")
 

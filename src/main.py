@@ -521,65 +521,96 @@ class PDFToolApp(tk.Tk):
         self._run_async("拆分 PDF", job)
 
 
-def _verify_startup_password(root: tk.Tk) -> bool:
-    # Simple local gate: password hash is embedded in app, no server dependency.
-    for _ in range(AUTH_MAX_RETRY):
-        dialog = tk.Toplevel(root)
-        dialog.title("身份验证")
-        dialog.transient(root)
-        dialog.grab_set()
-        dialog.resizable(False, False)
-        dialog.protocol("WM_DELETE_WINDOW", lambda: None)
+def _center_window(win: tk.Tk, width: int, height: int) -> None:
+    win.update_idletasks()
+    sw = win.winfo_screenwidth()
+    sh = win.winfo_screenheight()
+    x = max(0, (sw - width) // 2)
+    y = max(0, (sh - height) // 2)
+    win.geometry("%dx%d+%d+%d" % (width, height, x, y))
 
-        result = {"ok": False, "password": ""}
 
-        frame = ttk.Frame(dialog, padding=14)
+def _bring_to_front(win: tk.Tk) -> None:
+    """macOS 打包后窗口常被挡在后台，需主动置顶一次。"""
+    win.update_idletasks()
+    win.deiconify()
+    win.lift()
+    win.focus_force()
+    if sys.platform == "darwin":
+        try:
+            win.attributes("-topmost", True)
+            win.after(400, lambda: win.attributes("-topmost", False))
+        except tk.TclError:
+            pass
+    win.update()
+
+
+def _verify_startup_password() -> bool:
+    """
+    启动密码验证。
+    macOS 上主窗口 withdraw + Toplevel 经常不显示，故使用独立登录窗。
+    """
+    for attempt in range(AUTH_MAX_RETRY):
+        login = tk.Tk()
+        login.title("PDFTool - 身份验证")
+        login.resizable(False, False)
+        _center_window(login, 360, 140)
+
+        if sys.platform == "darwin":
+            try:
+                login.attributes("-topmost", True)
+            except tk.TclError:
+                pass
+
+        verified = {"ok": False}
+        pwd_var = tk.StringVar()
+
+        frame = ttk.Frame(login, padding=16)
         frame.pack(fill=tk.BOTH, expand=True)
         ttk.Label(frame, text="请输入使用密码：").pack(anchor=tk.W)
-        pwd_var = tk.StringVar()
         entry = ttk.Entry(frame, textvariable=pwd_var, show="*")
-        entry.pack(fill=tk.X, pady=(8, 12))
+        entry.pack(fill=tk.X, pady=(10, 14))
         entry.focus_set()
 
         btns = ttk.Frame(frame)
         btns.pack(fill=tk.X)
 
-        def on_confirm() -> None:
-            result["ok"] = True
-            result["password"] = pwd_var.get()
-            dialog.destroy()
+        def on_confirm(_event=None) -> None:
+            digest = hashlib.sha256(pwd_var.get().encode("utf-8")).hexdigest()
+            if digest == AUTH_PASSWORD_SHA256:
+                verified["ok"] = True
+                login.destroy()
+            else:
+                messagebox.showerror("错误", "密码错误，请重试。", parent=login)
+                entry.select_range(0, tk.END)
+                entry.focus_set()
 
         def on_cancel() -> None:
-            dialog.destroy()
+            login.destroy()
 
         ttk.Button(btns, text="取消", command=on_cancel).pack(side=tk.RIGHT)
         ttk.Button(btns, text="确定", command=on_confirm).pack(side=tk.RIGHT, padx=(0, 8))
-        dialog.bind("<Return>", lambda _e: on_confirm())
-        dialog.bind("<Escape>", lambda _e: on_cancel())
+        login.bind("<Return>", on_confirm)
+        login.bind("<Escape>", lambda _e: on_cancel())
+        login.protocol("WM_DELETE_WINDOW", on_cancel)
 
-        root.wait_window(dialog)
-        if not result["ok"]:
-            return False
+        _bring_to_front(login)
+        login.mainloop()
 
-        digest = hashlib.sha256(result["password"].encode("utf-8")).hexdigest()
-        if digest == AUTH_PASSWORD_SHA256:
+        if verified["ok"]:
             return True
-        messagebox.showerror("错误", "密码错误，请重试。", parent=root)
-    messagebox.showerror("错误", "密码错误次数过多，程序将退出。", parent=root)
+        if attempt < AUTH_MAX_RETRY - 1:
+            continue
+        messagebox.showerror("错误", "已取消或密码错误次数过多。")
+        return False
     return False
 
 
 def main() -> None:
-    app = PDFToolApp()
-    # Hide main window until authentication succeeds.
-    app.withdraw()
-    # Win10 部分环境需先刷新事件循环，否则密码框可能不显示导致“点了没反应”
-    app.update_idletasks()
-    app.update()
-    if not _verify_startup_password(app):
-        app.destroy()
+    if not _verify_startup_password():
         return
-    app.deiconify()
+    app = PDFToolApp()
+    _bring_to_front(app)
     app.mainloop()
 
 
