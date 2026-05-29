@@ -36,6 +36,9 @@ def _find_soffice() -> Optional[str]:
 
 
 def word_to_pdf(input_path: str, output_path: Optional[str] = None) -> str:
+    # Strategy:
+    # 1) Prefer LibreOffice headless (supports more Office formats)
+    # 2) Fallback to Word COM on Windows for doc/docx/rtf
     input_path = os.path.abspath(input_path)
     if not os.path.isfile(input_path):
         raise FileNotFoundError("找不到文件：%s" % input_path)

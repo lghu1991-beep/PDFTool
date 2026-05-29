@@ -96,6 +96,7 @@ def _build_text_overlay(
     position: WatermarkPosition,
     layout: WatermarkLayout,
 ) -> bytes:
+    # Render watermark on an in-memory single-page PDF, then merge into each target page.
     font_name = _pick_text_font(text)
     text_width = max(24.0, pdfmetrics.stringWidth(text, font_name, font_size))
     text_height = max(16.0, font_size * 1.2)
@@ -235,6 +236,10 @@ def _build_image_overlay(
 
 
 def _apply_overlay_pages(input_path: str, output_path: str, overlay_builder) -> None:
+    # Core watermark pipeline:
+    # 1) build per-page overlay PDF in memory
+    # 2) merge overlay into original page content
+    # 3) write merged result directly (no implicit auto-compress here)
     reader = PdfReader(input_path)
     writer = PdfWriter()
     for page in reader.pages:
@@ -343,6 +348,15 @@ def _compress_with_pymupdf(
         import fitz
     except ImportError as exc:
         raise RuntimeError("强压缩需要 pymupdf，请执行：pip install pymupdf") from exc
+
+    # PyInstaller onefile：确保 MuPDF 原生 DLL 可被加载（Win10 常见启动问题）
+    if getattr(sys, "frozen", False) and hasattr(os, "add_dll_directory"):
+        meipass = getattr(sys, "_MEIPASS", "")
+        if meipass and os.path.isdir(meipass):
+            try:
+                os.add_dll_directory(meipass)
+            except OSError:
+                pass
 
     _ensure_parent_dir(output_path)
     doc = fitz.open(input_path)

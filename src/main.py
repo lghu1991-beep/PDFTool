@@ -10,6 +10,7 @@ import threading
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
 
+# When running from PyInstaller onefile, modules/resources are unpacked to _MEIPASS.
 if getattr(sys, "frozen", False):
     BASE_DIR = sys._MEIPASS  # type: ignore[attr-defined]
     APP_DIR = os.path.dirname(sys.executable)
@@ -19,17 +20,21 @@ else:
 
 sys.path.insert(0, BASE_DIR)
 
-from pdf_core import (  # noqa: E402
-    add_image_watermark,
-    add_text_watermark,
-    compress_pdf,
-    format_size,
-    merge_pdfs,
-    pdf_page_count,
-    split_every_page,
-    split_pdf,
-)
-from word_convert import word_to_pdf  # noqa: E402
+_IMPORT_ERROR = None
+try:
+    from pdf_core import (  # noqa: E402
+        add_image_watermark,
+        add_text_watermark,
+        compress_pdf,
+        format_size,
+        merge_pdfs,
+        pdf_page_count,
+        split_every_page,
+        split_pdf,
+    )
+    from word_convert import word_to_pdf  # noqa: E402
+except Exception as exc:  # noqa: BLE001
+    _IMPORT_ERROR = exc
 
 AUTH_MAX_RETRY = 3
 # Default password: 18RnPiodb.
@@ -514,6 +519,7 @@ class PDFToolApp(tk.Tk):
 
 
 def _verify_startup_password(root: tk.Tk) -> bool:
+    # Simple local gate: password hash is embedded in app, no server dependency.
     for _ in range(AUTH_MAX_RETRY):
         dialog = tk.Toplevel(root)
         dialog.title("身份验证")
@@ -562,7 +568,11 @@ def _verify_startup_password(root: tk.Tk) -> bool:
 
 def main() -> None:
     app = PDFToolApp()
+    # Hide main window until authentication succeeds.
     app.withdraw()
+    # Win10 部分环境需先刷新事件循环，否则密码框可能不显示导致“点了没反应”
+    app.update_idletasks()
+    app.update()
     if not _verify_startup_password(app):
         app.destroy()
         return
@@ -571,4 +581,11 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    from startup_log import run_main, show_fatal
+
+    if _IMPORT_ERROR is not None:
+        import traceback
+
+        show_fatal("PDFTool 模块加载失败", traceback.format_exception_only(type(_IMPORT_ERROR), _IMPORT_ERROR)[0])
+    else:
+        run_main(main)

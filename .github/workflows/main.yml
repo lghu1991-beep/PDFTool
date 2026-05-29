@@ -11,6 +11,7 @@ permissions:
 
 jobs:
   build:
+    # Build Windows exe in GitHub-hosted Windows runner.
     runs-on: windows-latest
 
     steps:

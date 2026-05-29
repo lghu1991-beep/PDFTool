@@ -1,10 +1,9 @@
 # -*- mode: python ; coding: utf-8 -*-
-"""PyInstaller 打包配置（Windows 单文件 exe）。"""
+# 调试版：带黑色控制台窗口，Win10 打不开时用于查看报错
 
 from PyInstaller.utils.hooks import collect_all
 
 block_cipher = None
-
 datas = []
 binaries = []
 hiddenimports = [
@@ -19,7 +18,6 @@ hiddenimports = [
     "reportlab.graphics.barcode.code128",
 ]
 
-# Explicitly collect package data/binaries so onefile exe can run on clean machines.
 for package in ("pymupdf", "reportlab"):
     pkg_datas, pkg_binaries, pkg_hidden = collect_all(package)
     datas += pkg_datas
@@ -36,8 +34,6 @@ a = Analysis(
     hooksconfig={},
     runtime_hooks=[],
     excludes=[],
-    win_no_prefer_redirects=False,
-    win_private_assemblies=False,
     cipher=block_cipher,
     noarchive=False,
 )
@@ -51,17 +47,10 @@ exe = EXE(
     a.zipfiles,
     a.datas,
     [],
-    name="PDFTool",  # output: dist/PDFTool.exe
+    name="PDFTool-debug",
     debug=False,
-    bootloader_ignore_signals=False,
     strip=False,
     upx=False,
-    upx_exclude=[],
-    runtime_tmpdir=None,
-    console=False,
+    console=True,
     disable_windowed_traceback=False,
-    argv_emulation=False,
-    target_arch=None,
-    codesign_identity=None,
-    entitlements_file=None,
 )

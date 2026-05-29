@@ -6,6 +6,10 @@ cd /d "%~dp0"
 call "%~dp0_paths.bat"
 set "PY=%PDFTOOL_PY%"
 
+REM Build principle:
+REM - Use project-local Python runtime (runtime\python311\python.exe)
+REM - Install dependencies
+REM - Run PyInstaller spec to produce dist\PDFTool.exe
 echo === PDFTool Windows 打包 ===
 
 if not exist "%PY%" (
