@@ -39,6 +39,15 @@ if errorlevel 1 (
 )
 
 echo.
+echo 准备内置 ffmpeg ...
+"%PY%" "%PDFTOOL_ROOT%\scripts\prepare_ffmpeg_win.py"
+if errorlevel 1 (
+  echo [错误] 打包需要本机 ffmpeg（加入 PATH 后重试）
+  pause
+  exit /b 1
+)
+
+echo.
 echo 开始打包单文件 exe ...
 "%PY%" -m PyInstaller --noconfirm --clean "%PDFTOOL_ROOT%\PDFTool.spec"
 
@@ -58,7 +67,8 @@ echo.
 echo 成功：%PDFTOOL_ROOT%\dist\PDFTool.exe
 for %%A in ("%PDFTOOL_ROOT%\dist\PDFTool.exe") do echo 大小：%%~zA 字节
 echo.
-echo 功能：Word转PDF / 文字·图片水印 / PDF压缩 / 合并 / 拆分
+echo 功能：工具集入口 / PDF工具 / 音频编辑（内置 ffmpeg）
+echo PDF：Word转PDF / 水印 / 压缩 / 合并 / 拆分
 echo Word 转 PDF 需本机安装 LibreOffice（推荐）或 Microsoft Word
 echo LibreOffice: https://www.libreoffice.org/download/
 echo.

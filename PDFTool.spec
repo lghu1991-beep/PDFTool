@@ -1,6 +1,8 @@
 # -*- mode: python ; coding: utf-8 -*-
 """PyInstaller 打包配置（Windows 单文件 exe）。"""
 
+import os
+
 from PyInstaller.utils.hooks import collect_all
 
 block_cipher = None
@@ -11,6 +13,11 @@ hiddenimports = [
     "pdf_core",
     "word_convert",
     "startup_log",
+    "app_common",
+    "hub_app",
+    "pdf_app",
+    "audio_app",
+    "ffmpeg_audio",
     "fitz",
     "pymupdf",
     "PIL",
@@ -18,6 +25,11 @@ hiddenimports = [
     "pypdf",
     "reportlab.graphics.barcode.code128",
 ]
+
+_spec_dir = os.path.dirname(os.path.abspath(SPEC))
+_ffmpeg_vendor = os.path.join(_spec_dir, "vendor", "ffmpeg-win")
+if os.path.isdir(_ffmpeg_vendor):
+    datas.append((_ffmpeg_vendor, "ffmpeg"))
 
 # Explicitly collect package data/binaries so onefile exe can run on clean machines.
 for package in ("pymupdf", "reportlab"):
