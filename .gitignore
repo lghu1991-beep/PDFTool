@@ -1,0 +1,26 @@
+# PyInstaller / 本地打包产物
+build/
+dist/
+
+# Windows 打包时复制的 ffmpeg（构建机生成）
+vendor/ffmpeg-win/
+
+# macOS 原生编译产物
+macOS/PDFToolNativeOC/PDFToolNative
+macOS/PDFToolNativeOC/*.o
+macOS/PDFToolNative/.build/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.eggs/
+venv/
+.venv/
+
+# IDE / 系统
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.swp
