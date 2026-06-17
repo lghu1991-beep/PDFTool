@@ -10,7 +10,7 @@ python3 -m pip install -U pip
 python3 -m pip install "flet[all]>=0.25.0"
 
 echo "==> 构建 APK（按 CPU 架构分包，体积更小）"
-flet build apk --split-per-abi -v
+flet build apk --split-per-abi --yes -v
 
 echo ""
 echo "构建完成，产物目录："
