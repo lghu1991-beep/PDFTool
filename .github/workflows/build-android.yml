@@ -36,13 +36,18 @@ jobs:
         run: python -m pip install -U pip && pip install "flet[all]==0.28.3"
 
       - name: Build APK
-        run: flet build apk --split-per-abi -v
+        run: flet build apk -v
 
       - name: Collect APK files
         run: |
           mkdir -p dist-android
           find build -name "*.apk" -exec cp {} dist-android/ \;
           ls -lh dist-android/
+          apk=$(find dist-android -name "*.apk" | head -1)
+          if [ -n "$apk" ]; then
+            cp "$apk" dist-android/PDFTool-universal-release.apk
+            ls -lh dist-android/PDFTool-universal-release.apk
+          fi
 
       - name: Verify APK
         run: |
@@ -72,6 +77,6 @@ jobs:
           {
             echo "## PDFTool Android 构建完成"
             echo "- 下载：本 Workflow → **Artifacts** → \`PDFTool-Android\`"
-            echo "- 含 arm64-v8a / armeabi-v7a / x86_64 分包 APK"
-            echo "- 手机安装：将对应架构 APK 拷到手机后安装（或 \`adb install xxx.apk\`）"
+            echo "- 产物：\`PDFTool-universal-release.apk\`（含 arm64-v8a / armeabi-v7a / x86_64）"
+            echo "- 手机安装：直接安装 universal 包即可，无需按 CPU 架构选择"
           } >> "$GITHUB_STEP_SUMMARY"

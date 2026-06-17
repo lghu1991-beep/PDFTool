@@ -22,7 +22,7 @@ PDFTool - Android 版使用说明
 1. 推送代码到 GitHub
 2. 打开仓库 → Actions → Build Android APK
 3. 下载 Artifacts 中的 PDFTool-Android.zip
-4. 解压得到 arm64-v8a / armeabi-v7a / x86_64 等 APK
+4. 解压得到 PDFTool-universal-release.apk（通用包，含常见 CPU 架构）
 
 方式二：本地构建（macOS / Linux / Windows）
 
@@ -35,16 +35,16 @@ PDFTool - Android 版使用说明
 
 安装到手机
 ----------
-- 真机：将 *-arm64-v8a-release.apk 传到手机安装（多数现代手机用 arm64）
-- 模拟器 x86_64：使用 *-x86_64-release.apk
-- 命令行：adb install path/to/app-release.apk
+- 推荐安装 PDFTool-universal-release.apk（通用包，自动适配骁龙等 arm64 手机）
+- 内含 arm64-v8a（骁龙/主流新机）、armeabi-v7a（旧 32 位 ARM）、x86_64（模拟器）
+- 命令行：adb install path/to/PDFTool-universal-release.apk
 
 白屏 / 无界面
 -------------
 常见原因与处理：
 
-1. 装错架构包
-   骁龙等现代手机请装 *-arm64-v8a-release.apk，不要装 x86_64 模拟器包。
+1. 装错包或旧分包
+   请安装 PDFTool-universal-release.apk；若仍使用旧的分架构包，骁龙手机应选 arm64-v8a。
 
 2. Flet 版本不匹配（最常见）
    本项目已锁定 flet==0.28.3。若用最新版 flet 重新打包，Android 可能白屏。

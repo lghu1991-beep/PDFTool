@@ -24,7 +24,8 @@ path = "src"
 [tool.flet.android]
 min_sdk_version = 24
 target_sdk_version = 35
-split_per_abi = true
+split_per_abi = false
+target_arch = ["arm64-v8a", "armeabi-v7a", "x86_64"]
 
 [tool.flet.android.permission]
 "android.permission.READ_MEDIA_IMAGES" = true
