@@ -1,6 +1,8 @@
 # PyInstaller / 本地打包产物
 build/
 dist/
+dist-android/
+release/
 
 # Windows 打包时复制的 ffmpeg（构建机生成）
 vendor/ffmpeg-win/
@@ -11,6 +13,9 @@ macOS/PDFToolNativeOC/*.o
 macOS/PDFToolNative/.build/
 
 # Python
+runtime/python311/
+.flet/
+.venv-android/
 __pycache__/
 *.py[cod]
 *.egg-info/
@@ -24,3 +29,5 @@ venv/
 .DS_Store
 Thumbs.db
 *.swp
+*.apk
+*.aab

@@ -1,0 +1,34 @@
+[project]
+name = "pdftool"
+version = "1.0.0"
+description = "PDFTool - PDF 水印、压缩、合并、拆分"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "flet>=0.25.0",
+    "pypdf>=4.0.0",
+    "reportlab>=4.0.0",
+    "Pillow>=10.0.0",
+]
+
+[tool.flet]
+org = "com.pdftool"
+product = "PDFTool"
+company = "PDFTool"
+copyright = "Copyright (c) PDFTool"
+
+[tool.flet.app]
+module = "android_main"
+path = "src"
+
+[tool.flet.android]
+min_sdk_version = 24
+target_sdk_version = 35
+split_per_abi = true
+
+[tool.flet.android.permission]
+"android.permission.READ_MEDIA_IMAGES" = true
+"android.permission.READ_MEDIA_VIDEO" = true
+"android.permission.READ_MEDIA_AUDIO" = true
+"android.permission.READ_EXTERNAL_STORAGE" = true
+"android.permission.WRITE_EXTERNAL_STORAGE" = true

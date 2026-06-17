@@ -437,11 +437,19 @@ def compress_pdf(
                 _compress_with_ghostscript(input_path, output_path, "/screen")
                 method = "ghostscript"
             except RuntimeError:
+                try:
+                    _compress_with_pymupdf(input_path, output_path)
+                    method = "pymupdf"
+                except (ImportError, RuntimeError):
+                    _compress_with_pypdf(input_path, output_path, aggressive=True)
+                    method = "pypdf"
+        else:
+            try:
                 _compress_with_pymupdf(input_path, output_path)
                 method = "pymupdf"
-        else:
-            _compress_with_pymupdf(input_path, output_path)
-            method = "pymupdf"
+            except (ImportError, RuntimeError):
+                _compress_with_pypdf(input_path, output_path, aggressive=True)
+                method = "pypdf"
 
     after = os.path.getsize(output_path)
     saved = max(0, before - after)

@@ -1,0 +1,45 @@
+PDFTool - Android 版使用说明
+================================
+
+功能
+----
+- 文字 / 图片水印
+- PDF 压缩（轻 / 中 / 强；Android 无 PyMuPDF 时「强」自动回退为内置压缩）
+- 合并多个 PDF
+- 按页码范围或每页拆分 PDF
+
+说明
+----
+- Android 版不含 Word 转 PDF（需 Windows 桌面版 + LibreOffice / Word）
+- 处理结果默认保存在应用私有目录下的 output 文件夹；也可通过「保存」按钮选择导出位置
+- 首次使用请允许文件访问权限
+
+在电脑上构建 APK
+----------------
+
+方式一：GitHub Actions（推荐，无需本机 Android SDK）
+
+1. 推送代码到 GitHub
+2. 打开仓库 → Actions → Build Android APK
+3. 下载 Artifacts 中的 PDFTool-Android.zip
+4. 解压得到 arm64-v8a / armeabi-v7a / x86_64 等 APK
+
+方式二：本地构建（macOS / Linux / Windows）
+
+1. 安装 Python 3.10+ 与 JDK 17
+2. 在项目根目录执行：
+   chmod +x build-android.sh
+   ./build-android.sh
+3. 首次构建会自动下载 Android SDK，耗时较长
+4. 产物在 build/apk/ 目录
+
+安装到手机
+----------
+- 真机：将 *-arm64-v8a-release.apk 传到手机安装（多数现代手机用 arm64）
+- 模拟器 x86_64：使用 *-x86_64-release.apk
+- 命令行：adb install path/to/app-release.apk
+
+开发调试（可选）
+----------------
+pip install -r requirements-android.txt
+flet run src/android_main.py
