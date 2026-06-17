@@ -6,6 +6,7 @@ from __future__ import annotations
 import os
 import sys
 import tempfile
+import traceback
 from typing import Callable, List, Optional
 
 import flet as ft
@@ -13,16 +14,20 @@ import flet as ft
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, BASE_DIR)
 
-from pdf_core import (  # noqa: E402
-    add_image_watermark,
-    add_text_watermark,
-    compress_pdf,
-    format_size,
-    merge_pdfs,
-    pdf_page_count,
-    split_every_page,
-    split_pdf,
-)
+_IMPORT_ERROR: Optional[BaseException] = None
+try:
+    from pdf_core import (  # noqa: E402
+        add_image_watermark,
+        add_text_watermark,
+        compress_pdf,
+        format_size,
+        merge_pdfs,
+        pdf_page_count,
+        split_every_page,
+        split_pdf,
+    )
+except Exception as exc:  # noqa: BLE001
+    _IMPORT_ERROR = exc
 
 
 def _app_output_dir() -> str:
@@ -47,10 +52,12 @@ class PdfToolPage:
     def __init__(self, page: ft.Page) -> None:
         self.page = page
         self.page.title = "PDFTool"
+        self.page.theme_mode = ft.ThemeMode.LIGHT
+        self.page.bgcolor = ft.Colors.WHITE
         self.page.scroll = ft.ScrollMode.AUTO
         self.page.padding = 16
 
-        self.status = ft.Text("就绪", color=ft.Colors.ON_SURFACE_VARIANT)
+        self.status = ft.Text("就绪", color="#666666")
         self.busy = ft.ProgressBar(visible=False)
 
         self.file_picker = ft.FilePicker(on_result=self._on_file_picked)
@@ -73,16 +80,23 @@ class PdfToolPage:
         )
 
         self.page.add(
-            ft.Text("PDFTool - PDF 工具", size=22, weight=ft.FontWeight.BOLD),
-            ft.Text(
-                "Android 版支持水印、压缩、合并、拆分。Word 转 PDF 请使用 Windows 桌面版。",
-                size=12,
-                color=ft.Colors.ON_SURFACE_VARIANT,
-            ),
-            self.tabs,
-            self.busy,
-            self.status,
+            ft.Column(
+                [
+                    ft.Text("PDFTool - PDF 工具", size=22, weight=ft.FontWeight.BOLD),
+                    ft.Text(
+                        "Android 版支持水印、压缩、合并、拆分。Word 转 PDF 请使用 Windows 桌面版。",
+                        size=12,
+                        color="#666666",
+                    ),
+                    ft.Container(content=self.tabs, expand=True),
+                    self.busy,
+                    self.status,
+                ],
+                expand=True,
+                spacing=12,
+            )
         )
+        self.page.update()
 
     def _build_watermark_tab(self) -> ft.Container:
         self.wm_input = ft.TextField(label="PDF 文件", read_only=True, expand=True)
@@ -541,9 +555,43 @@ class PdfToolPage:
         self._run_async("拆分 PDF", job)
 
 
+def _show_startup_error(page: ft.Page, title: str, detail: str) -> None:
+    page.title = "PDFTool"
+    page.theme_mode = ft.ThemeMode.LIGHT
+    page.bgcolor = ft.Colors.WHITE
+    page.padding = 16
+    page.add(
+        ft.Text(title, size=20, weight=ft.FontWeight.BOLD, color=ft.Colors.RED_700),
+        ft.Text(
+            "请重新安装 arm64-v8a 包，或用 adb logcat 查看详细日志。",
+            size=12,
+            color="#666666",
+        ),
+        ft.Text(detail, size=12, selectable=True),
+    )
+    page.update()
+
+
 def main(page: ft.Page) -> None:
-    PdfToolPage(page)
+    if _IMPORT_ERROR is not None:
+        _show_startup_error(
+            page,
+            "PDF 模块加载失败",
+            "".join(traceback.format_exception_only(type(_IMPORT_ERROR), _IMPORT_ERROR)),
+        )
+        return
+    try:
+        PdfToolPage(page)
+    except Exception as exc:  # noqa: BLE001
+        _show_startup_error(page, "界面初始化失败", traceback.format_exc())
+
+
+def _run_app() -> None:
+    if hasattr(ft, "run"):
+        ft.run(main)
+    else:
+        ft.app(target=main)
 
 
 if __name__ == "__main__":
-    ft.app(target=main)
+    _run_app()

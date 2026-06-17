@@ -7,7 +7,7 @@ cd "$ROOT"
 
 echo "==> 安装构建依赖"
 python3 -m pip install -U pip
-python3 -m pip install "flet[all]>=0.25.0"
+python3 -m pip install "flet[all]==0.28.3"
 
 echo "==> 构建 APK（按 CPU 架构分包，体积更小）"
 flet build apk --split-per-abi --yes -v

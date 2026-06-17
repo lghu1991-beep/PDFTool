@@ -39,6 +39,29 @@ PDFTool - Android 版使用说明
 - 模拟器 x86_64：使用 *-x86_64-release.apk
 - 命令行：adb install path/to/app-release.apk
 
+白屏 / 无界面
+-------------
+常见原因与处理：
+
+1. 装错架构包
+   骁龙等现代手机请装 *-arm64-v8a-release.apk，不要装 x86_64 模拟器包。
+
+2. Flet 版本不匹配（最常见）
+   本项目已锁定 flet==0.28.3。若用最新版 flet 重新打包，Android 可能白屏。
+   请重新执行 build-android.sh 或 GitHub Actions 构建后再安装。
+
+3. Python 运行时未打进 APK
+   手机连电脑后执行：
+     adb logcat | grep -iE "python|flet|serious|flutter|Exception"
+   若出现 libpythonbundle.so not found，说明打包异常，需换 flet==0.28.3 重编。
+
+4. 启动报错被吞掉
+   新版会在界面显示「模块加载失败 / 界面初始化失败」及错误详情；
+   若仍纯白屏，基本可判定为第 3 点（运行时未启动）。
+
+5. 旧包未卸载
+   先卸载旧版 PDFTool，再安装新 APK。
+
 开发调试（可选）
 ----------------
 pip install -r requirements-android.txt

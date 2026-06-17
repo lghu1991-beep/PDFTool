@@ -5,7 +5,7 @@ description = "PDFTool - PDF 水印、压缩、合并、拆分"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
-    "flet>=0.25.0",
+    "flet==0.28.3",
     "pypdf>=4.0.0",
     "reportlab>=4.0.0",
     "Pillow>=10.0.0",
